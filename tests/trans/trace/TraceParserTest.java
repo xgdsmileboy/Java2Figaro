@@ -28,7 +28,7 @@ public class TraceParserTest {
         //System.out.println("javac -cp " + Util.JAVA2FIGARO_JAR_PATH + " " + outFile);
         //System.out.println("java -cp " + resourceDirectory.getAbsolutePath() + ";" + Util.JAVA2FIGARO_JAR_PATH + " " + className);
         TraceParser.runCmd("javac -cp " + Util.JAVA2FIGARO_JAR_FILE.getAbsolutePath() + " " + outFile);
-        TraceParser.runCmd("java -cp " + resourceDirectory.getAbsolutePath() + ";" + Util.JAVA2FIGARO_JAR_FILE.getAbsolutePath() + " " + className);
+        TraceParser.runCmd("java -cp " + resourceDirectory.getAbsolutePath() + File.pathSeparator + Util.JAVA2FIGARO_JAR_FILE.getAbsolutePath() + " " + className);
     }
 
     @Test
