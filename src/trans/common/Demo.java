@@ -8,28 +8,31 @@ import java.util.ArrayList;
 public class Demo {
 
     public static void main(String[] args) {
-        runJsonFile();
+//        runJsonFile();
+        runProject1();
     }
 
+    private final static String DATA_BASE = "/Users/Jack/Code/IntelliJ/Java2Figaro/Java2FigaroData";
+
     private static void runPatchSimByFiles() {
-        String workPath = "D:\\program\\workspace\\Java2FigaroData";
+        String workPath = DATA_BASE;
         System.out.println(PatchSimParser.analyzeByFiles(new File(workPath)));
     }
 
     private static void runJsonFile() {
-        String workPath = "D:\\program\\workspace\\Java2FigaroData";
+        String workPath = DATA_BASE;
         Transverse.runByJsonFile(new File(workPath));
     }
 
     private static void runFinalResultGenerate() {
-        String resultFilePath = "D:\\program\\workspace\\Java2FigaroData\\Output.txt";
+        String resultFilePath = DATA_BASE + "/Output.txt";
         Transverse.genMultiTestResultByFiles(new File(resultFilePath));
     }
 
     private static void runProject1() {
-        String originProjectPath = "D:\\program\\workspace\\Java2FigaroData\\tmp";
-        String copyProjectPath = "D:\\program\\workspace\\Java2FigaroData\\copy";
-        String srcFilePath = "\\src\\main\\java\\introclassJava\\smallest_af81ffd4_000.java";
+        String originProjectPath = DATA_BASE + "/tmp";
+        String copyProjectPath = DATA_BASE + "/copy";
+        String srcFilePath = "/src/main/java/introclassJava/smallest_af81ffd4_000.java";
         String testName = "introclassJava.smallest_af81ffd4_000BlackboxTest#test5";
         String methodName = "exec";
 
@@ -44,12 +47,12 @@ public class Demo {
     }
 
     public static void runProject2() {
-        File projectDir = new File("D:\\program\\workspace\\Java2FigaroData\\digits_d5059e2b_000");
-        File mutantFile = new File(projectDir, "mutants\\digits_d5059e2b_000_CapGen_12.java");
-        String srcFilePath = "\\src\\main\\java\\introclassJava\\digits_d5059e2b_000.java";
+        File projectDir = new File(DATA_BASE + "/digits_d5059e2b_000");
+        File mutantFile = new File(projectDir, "mutants/digits_d5059e2b_000_CapGen_12.java");
+        String srcFilePath = "/src/main/java/introclassJava/digits_d5059e2b_000.java";
         String testName = "digits_d5059e2b_000BlackboxTest#test4";
         File originProjectDir = new File(projectDir, "source");
-        String copyProjectPath = "D:\\program\\workspace\\Java2FigaroData\\copy";
+        String copyProjectPath = DATA_BASE + "/copy";
         String methodName = "exec";
 
         ArrayList<String> exEntry = new ArrayList<>();

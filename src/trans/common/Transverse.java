@@ -1,5 +1,6 @@
 package trans.common;
 
+import org.apache.commons.io.FileUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
@@ -280,13 +281,11 @@ public class Transverse {
     }
 
     private static void copyProject(File project, File target) {
-        if (target.exists())
-            Util.deleteDir(target);
-
-        String command = "xcopy " + project.getAbsolutePath() + " " + target.getAbsolutePath() + " /E /I /H /C /Y";
         try {
-            Runtime.getRuntime().exec(command).waitFor();
-        } catch (IOException | InterruptedException e) {
+            if (target.exists())
+                FileUtils.deleteDirectory(target);
+            FileUtils.copyDirectory(project, target);
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -333,22 +332,15 @@ public class Transverse {
             LevelLogger.debug("RUN TEST : " + testName);
         }
         boolean ret = false;
-        try {
-            Process process = Runtime.getRuntime().exec("cmd /c " + command);
-            InputStream fis = process.getInputStream();
-            InputStreamReader isr = new InputStreamReader(fis);
-            BufferedReader br = new BufferedReader(isr);
-            String line;
-            while((line = br.readLine()) != null) {
-                if (line.contains("BUILD FAILURE"))
-                    ret = false;
-                if (line.contains("BUILD SUCCESS"))
-                    ret = true;
-                //LevelLogger.debug(line);
-            }
-            process.waitFor();
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+        String[] cmd = {"/bin/sh", "-c", command};
+
+        List<String> result = Executor.execute(cmd);
+        for (String line : result) {
+            if (line.contains("BUILD FAILURE"))
+                ret = false;
+            if (line.contains("BUILD SUCCESS"))
+                ret = true;
+            LevelLogger.debug(line);
         }
         return ret;
     }
@@ -357,24 +349,18 @@ public class Transverse {
         double retValue = 0;
         String sourcePath = new File(workDirectory, "patch.scala").getAbsolutePath();
         String command1 = "scalac -cp " + Util.FIGARO_JAR_FILE.getAbsolutePath() + " -d " + workDirectory.getAbsolutePath() + " " + sourcePath;
-        String command2 = "scala -cp " + workDirectory.getAbsolutePath() + ";" + Util.FIGARO_JAR_FILE.getAbsolutePath() + " patch";
+        String command2 = "scala -cp " + workDirectory.getAbsolutePath() + File.pathSeparator + Util.FIGARO_JAR_FILE.getAbsolutePath() + " patch";
         LevelLogger.debug("GENERATE FIGARO RESULT");
 
-        try {
-            Process process = Runtime.getRuntime().exec("cmd /c " + command1 + " && " + command2);
-            InputStream fis = process.getInputStream();
-            InputStreamReader isr = new InputStreamReader(fis);
-            BufferedReader br = new BufferedReader(isr);
-            String line;
-            while((line = br.readLine()) != null)
-                try {
-                    retValue = Double.parseDouble(line);
-                    break;
-                } catch (NumberFormatException ignored) {
-                }
-            process.waitFor();
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+        String[] cmd = {"/bin/sh", "-c", command1 + " && " + command2};
+
+        List<String> result = Executor.execute(cmd);
+        for (String line : result) {
+            try {
+                retValue = Double.parseDouble(line);
+                break;
+            } catch (NumberFormatException ignored) {
+            }
         }
         return retValue;
     }
